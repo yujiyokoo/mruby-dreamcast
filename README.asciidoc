@@ -1,0 +1,66 @@
+= mrbdc
+
+mrbdc is a collection of scripts and settings to build a VM environment for building Dreamcast exacutable binaries with mruby.
+
+== Goals
+
+This project aims to aprovide a comprehensive set of tools needed to develop Dreamcats binaries.
+
+== What you need
+
+This project depends on many tools and libraries, but first, you need:
+
+* A computer with a working vagrant installation
+* Disk space (of about ~20GB)
+
+Please note this has been developed on macOS High Sierra, Vagrant 2.2.4 and VirtualBox 5.2.28.
+VirtualBox 5 is recommended.
+VirtualBox 6 might work, but it has not been tested.
+
+This has not been tested with VMware at all, and is not expected to work on it.
+
+Also please note the default configuration is to use bridged network on the VM, which means the VM behaves like it is connected directly to the same network as your computer.
+If this is not desirable, please edit `Vagrantfile` and change the network config.
+
+== Installation
+
+.Steps
+. Ensure you have sufficient disc space
+. Install https://www.virtualbox.org/wiki/Downloads[VirtualBox] for your host computer
+. Install https://www.vagrantup.com/docs/installation/[Vagrant] for your host computer
+. Run `vagrant plugin install vagrant-vbguest` to install the vagrant-vbguest plugin (to keep Guest Additons up to date)
+. Clone this repo to somewhere on your host computer
+. Edit `vars.yml` to set your name and email address for the git user
+. Run `> vagrant up` from your shell (expect this to take _a while_)
++
+You will probably get asked what you want to do with the network interface (if you don't, never mind!).
+It may be something like this:
++
+----
+==> default: Available bridged network interfaces:
+1) en0: Wi-Fi (AirPort)
+2) p2p0
+3) awdl0
+4) en1: Thunderbolt 1
+5) en2: Thunderbolt 2
+6) bridge0
+==> default: When choosing an interface, it is usually the one that is
+==> default: being used to connect to the internet.
+    default: Which interface should the network bridge to?
+----
++
+If you get this, please select one that is connected to your physical network (1 in this case).
++
+[NOTE]
+===============================
+Optionally, you can set this network config value in the network configuration of your `Vagrantfile`.
+Please see the comments around lines containing `config.vm.network` in `Vagrantfile`.
+===============================
++
+. As you encounter issues, fix them. You might get a few problems
+. If you received errors from `vagrant up`, and corrected the problem somehow, you could run `vagrant reload --provision` to retry.
+. If the above command (`vagrant up` or `vagrant reload --porvision`) completes without error messages, it should be all good to go.
+
+
+Once it's all done, now you're ready to start developing.
+See below for getting started.

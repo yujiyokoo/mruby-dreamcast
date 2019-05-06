@@ -1,0 +1,83 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+  gather_facts: False
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: update/upgrade packages
+      apt:
+        upgrade: full
+        update_cache: yes
+    - name: install packages
+      apt:
+        state: present
+        name:
+          - build-essential
+          - git
+          - subversion
+          - libjpeg-dev
+          - libpng12-dev
+          - curl
+    - git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_email }}"
+      become: false
+    - git_config:
+        name: user.name
+        scope: global
+        value: "{{ git_name }}"
+      become: false
+    - name: add vagrant to dialout group (so you can use /dev/ttyX)
+      shell: "usermod -a -G dialout vagrant"
+    - name: /opt/toolchains/dc directory
+      file:
+        path: /opt/toolchains/dc
+        owner: vagrant
+        group: vagrant
+        state: directory
+    - name: check out kallistios
+      git:
+        repo: git://git.code.sf.net/p/cadcdev/kallistios
+        dest: /opt/toolchains/dc/kos
+      become: false
+    - name: tool download for building kos
+      shell: sh ./download.sh
+      args:
+        chdir: /opt/toolchains/dc/kos/utils/dc-chain
+      become: false
+    - name: tool unpack for building kos
+      shell: sh ./unpack.sh
+      args:
+        chdir: /opt/toolchains/dc/kos/utils/dc-chain
+      become: false
+    - name: build dc-chain
+      make:
+        chdir: /opt/toolchains/dc/kos/utils/dc-chain
+        target: all
+        params:
+          erase: 1
+      become: false
+    - name: copy environ.sh
+      shell: cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh
+      become: false
+    - name: build kos
+      shell: ". /opt/toolchains/dc/kos/environ.sh && cd /opt/toolchains/dc/kos && make"
+      become: false
+    - name: check out kos ports
+      git:
+        repo: git://git.code.sf.net/p/cadcdev/kos-ports
+        dest: /opt/toolchains/dc/kos-ports
+      become: false
+    - name: build kos ports
+      shell: ". /opt/toolchains/dc/kos/environ.sh && sh /opt/toolchains/dc/kos-ports/utils/build-all.sh"
+      become: false
+    - name: install fftw3 for cross compiler
+      shell: wget http://www.fftw.org/fftw-3.3.8.tar.gz
+    - name: check out dcload
+      git:
+        repo: https://github.com/sizious/dcload-serial.git
+        dest: /opt/toolchains/dc/dc-serial
+      become: false
