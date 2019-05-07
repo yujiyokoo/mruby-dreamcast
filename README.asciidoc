@@ -4,7 +4,7 @@ mrbdc is a collection of scripts and settings to build a VM environment for buil
 
 == Goals
 
-This project aims to aprovide a comprehensive set of tools needed to develop Dreamcats binaries.
+This project aims to provide a set of tools that are easy to set up to develop Dreamcats binaries.
 
 == What you need
 
