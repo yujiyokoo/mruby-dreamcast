@@ -16,11 +16,6 @@ Vagrant.configure("2") do |config|
   # config.vm.box = "debian/contrib-stretch64" # for ubuntu, "ubuntu/xenial64"
   config.vm.box = "debian/contrib-jessie64" # for ubuntu, "ubuntu/xenial64"
 
-  # Resize disk. Make sure you have vagrant-disksize installed
-  # Please note, this will not increase the partition. Use gparted live CD iso
-  # to do that.
-  config.disksize.size = '50GB'
-
   # Use host's ssh agent from guest
   config.ssh.forward_agent = true
 
