@@ -20,6 +20,9 @@
           - libjpeg-dev
           - libpng12-dev
           - curl
+          - libssl-dev
+          - ruby
+          - bison
     - git_config:
         name: user.email
         scope: global
@@ -38,12 +41,14 @@
         owner: vagrant
         group: vagrant
         state: directory
-    - name: check out kallistios
+    - name: clone kallistios
       git:
         repo: git://git.code.sf.net/p/cadcdev/kallistios
         dest: /opt/toolchains/dc/kos
+        version: a449e93c615ba2d8c2abf9f4dcc485b6d7d1bfa3
+        force: yes # discard local changes from patch
       become: false
-    - name: tool download for building kos
+    - name: download kos/utils/dc-chain
       shell: sh ./download.sh
       args:
         chdir: /opt/toolchains/dc/kos/utils/dc-chain
@@ -61,23 +66,88 @@
           erase: 1
       become: false
     - name: copy environ.sh
-      shell: cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh
+      cmd: cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh
       become: false
+    - name: apply patch to make kos build
+      shell: patch -p1 < /vagrant/patch.on.kos-a449e93c615ba2d8c2abf9f4dcc485b6d7d1bfa3
+      args:
+        chdir: /opt/toolchains/dc/kos
+      become: false
+    - name: copy un.h
+      copy:
+        src: un.h_for_kos_include_sys
+        dest: /opt/toolchains/dc/kos/include/sys/un.h
     - name: build kos
       shell: ". /opt/toolchains/dc/kos/environ.sh && cd /opt/toolchains/dc/kos && make"
       become: false
-    - name: check out kos ports
+    - name: clone kos ports
       git:
         repo: git://git.code.sf.net/p/cadcdev/kos-ports
         dest: /opt/toolchains/dc/kos-ports
+        version: 592af41f75802b42d995930b78666556eb0ce79d
+        force: yes
       become: false
+    - name: disable curl for kos-parts fetch (switching curl -> wget) # may not be necessary. had some local issues with curl ipv6
+      lineinfile:
+        path: /opt/toolchains/dc/kos-ports/config.mk
+        regexp: '^(FETCH_CMD\s*=\s*curl.*)'
+        line: '#\1'
+        backrefs: yes
+    - name: enable wget for kos-parts fetch (switching curl -> wget) # may not be necessary. had some local issues with curl ipv6
+      lineinfile:
+        path: /opt/toolchains/dc/kos-ports/config.mk
+        regexp: '^#(FETCH_CMD\s*=\s*wget.*)'
+        line: '\1'
+        backrefs: yes
     - name: build kos ports
       shell: ". /opt/toolchains/dc/kos/environ.sh && sh /opt/toolchains/dc/kos-ports/utils/build-all.sh"
       become: false
-    - name: install fftw3 for cross compiler
-      shell: wget http://www.fftw.org/fftw-3.3.8.tar.gz
-    - name: check out dcload
+    - name: clone dcload
       git:
         repo: https://github.com/sizious/dcload-serial.git
         dest: /opt/toolchains/dc/dc-serial
+      become: false
+    - name: /vagrant/src directory
+      file:
+        path: /vagrant/src
+        owner: vagrant
+        group: vagrant
+        state: directory
+    - name: clone mruby
+      git:
+        repo: https://github.com/mruby/mruby.git
+        dest: /vagrant/src/mruby
+        version: 7c91efc
+      become: false
+    - name: remove mruby-host (if exists) prior to copy
+      file:
+        path: /vagrant/src/mruby-host
+        state: absent
+    - name: copy mruby repo for host
+      command: cp -r /vagrant/src/mruby /vagrant/src/mruby-host
+    - name: remove mruby-sh4 (if exists) prior to copy
+      file:
+        path: /vagrant/src/mruby-sh4
+        state: absent
+    - name: copy mruby repo for sh4
+      command: cp -r /vagrant/src/mruby /vagrant/src/mruby-sh4
+    - name: build mruby for host
+      make:
+        chdir: /vagrant/src/mruby-host
+      become: false
+    - name: copy envset.crosscompile.sh4.sh
+      copy:
+        src: envset.crosscompile.sh4.sh
+        dest: /vagrant/src/mruby-sh4/envset.crosscompile.sh4.sh
+    - name: patch mruby for sh4
+      shell: >
+        git checkout . && patch -p1 < ../../patch.on.mruby-2.0.1.37bc343e0ad6b837de672c8c0cf6bf00876f746b
+      args:
+        chdir: /vagrant/src/mruby-sh4
+      become: false
+    - name: build mruby for sh4
+      shell: >
+        . /opt/toolchains/dc/kos/environ.sh && . /vagrant/src/mruby-sh4/envset.crosscompile.sh4.sh && make 2>&1 | grep 'mrbc: Syntax error: ")" unexpected' && cp ../mruby-host/build/host/bin/mrbc build/host/bin/mrbc && make
+      args:
+        chdir: /vagrant/src/mruby-sh4
       become: false
