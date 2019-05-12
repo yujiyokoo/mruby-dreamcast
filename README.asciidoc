@@ -1,10 +1,20 @@
-= mrbdc
+= mruby-dreamcast
 
-mrbdc is a collection of scripts and settings to build a VM environment for building Dreamcast exacutable binaries with mruby.
+mruby-dreamcast is a collection of scripts and settings to build a VM environment for building Dreamcast executable binaries with mruby.
 
 == Goals
 
-This project aims to provide a set of tools that are easy to set up to develop Dreamcats binaries.
+This project aims to provide a set of tools that are easy to set up to develop Dreamcast binaries.
+
+== What works (and what doesn't)
+
+* mruby in general works
+* 2D drawing (including text) works
+
+Not much else works.
+Currently there is no support for VMU or sound but hopefully something will be available soon.
+
+Also, in order to make builds work, the mruby-io gem has been taken out.
 
 == What you need
 
@@ -22,16 +32,24 @@ This has not been tested with VMware at all, and is not expected to work on it.
 Also please note the default configuration is to use bridged network on the VM, which means the VM behaves like it is connected directly to the same network as your computer.
 If this is not desirable, please edit `Vagrantfile` and change the network config.
 
+== What you might also want to have (optional)
+
+* A Dreamcast that supports booting from CD-Rs (MIL-CD support)
+* A dreamcast serial cable ("coders cable")
+* A CD-R drive and some CD-R discs
+
+Information on how to use these will be added later.
+
 == Installation
 
 .Steps
 . Ensure you have sufficient disc space
 . Install https://www.virtualbox.org/wiki/Downloads[VirtualBox] for your host computer
 . Install https://www.vagrantup.com/docs/installation/[Vagrant] for your host computer
-. Run `vagrant plugin install vagrant-vbguest` to install the vagrant-vbguest plugin (to keep Guest Additons up to date)
+. Run `vagrant plugin install vagrant-vbguest` to install the vagrant-vbguest plugin (to keep Guest Additions up to date)
 . Install https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html[ansible]
 . Clone this repo to somewhere on your host computer
-. Edit `vars.yml` to set your name and email address for the git user
+. Copy `vars.yml.example` to `vars.yml` and edit contents to set your name and email address for the git user
 . Run `> vagrant up` from your shell (expect this to take _a while_)
 +
 You will probably get asked what you want to do with the network interface (if you don't, never mind!).
@@ -51,6 +69,7 @@ It may be something like this:
 ----
 +
 If you get this, please select one that is connected to your physical network (1 in this case).
+It will probably depend on your hardware and OS setup.
 +
 [NOTE]
 ===============================
@@ -58,10 +77,16 @@ Optionally, you can set this network config value in the network configuration o
 Please see the comments around lines containing `config.vm.network` in `Vagrantfile`.
 ===============================
 +
-. As you encounter issues, fix them. You might get a few problems
+. As you encounter issues, unfortunately, all I can say is please fix them. You might get a few problems
 . If you received errors from `vagrant up`, and corrected the problem somehow, you could run `vagrant reload --provision` to retry.
-. If the above command (`vagrant up` or `vagrant reload --porvision`) completes without error messages, it should be all good to go.
+. If the above command (`vagrant up` or `vagrant reload --provision`) completes without error messages, it should be all good to go.
 
+Once it's all done, you are ready to start developing.
+Please refer to the project "mrbtris" to get started on development.
 
-Once it's all done, now you're ready to start developing.
-See below for getting started.
+If you get stuck, find bugs, or have a better solution to problems, please report issues.
+Thanks!
+
+== Licence
+
+Unless otherwise indicated (which is the case for "un.h_for_kos_include_sys" or originally "sys/un.h"), this repository is licenced under the MIT licence.
