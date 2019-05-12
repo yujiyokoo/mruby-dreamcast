@@ -66,7 +66,7 @@
           erase: 1
       become: false
     - name: copy environ.sh
-      cmd: cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh
+      command: cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh
       become: false
     - name: apply patch to make kos build
       shell: patch -p1 < /vagrant/patch.on.kos-a449e93c615ba2d8c2abf9f4dcc485b6d7d1bfa3
