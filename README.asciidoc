@@ -2,6 +2,10 @@
 
 mruby-dreamcast is a collection of scripts and settings to build a VM environment for building Dreamcast executable binaries with mruby.
 
+== Demo video
+
+This is a game developed using this project: https://vimeo.com/335686570
+
 == Goals
 
 This project aims to provide a set of tools that are easy to set up to develop Dreamcast binaries.
