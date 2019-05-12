@@ -11,7 +11,6 @@ This project aims to provide a set of tools that are easy to set up to develop D
 * mruby in general works
 * 2D drawing (including text) works
 
-Not much else works.
 Currently there is no support for VMU or sound but hopefully something will be available soon.
 
 Also, in order to make builds work, the mruby-io gem has been taken out.
@@ -86,6 +85,13 @@ Please refer to the project "mrbtris" to get started on development.
 
 If you get stuck, find bugs, or have a better solution to problems, please report issues.
 Thanks!
+
+== TODO
+
+* make the mruby build better, especially around building once for host, once for DC
+* put some build chunks into its own yml or a shell script
+* scripted/automated test
+* consider alternatives to checking out specific versions and patching them
 
 == Licence
 
