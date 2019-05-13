@@ -13,8 +13,9 @@ This project aims to provide a set of tools that are easy to set up to develop D
 == What works (and what doesn't)
 
 * mruby in general works
-* 2D drawing (including text) works
+* API calls provided by the platform (KallistiOS) but currently you have to write your wrapper
 
+The intention is that more API calls will be available without your own wrapper.
 Currently there is no support for VMU or sound but hopefully something will be available soon.
 
 Also, in order to make builds work, the mruby-io gem has been taken out.
@@ -24,7 +25,7 @@ Also, in order to make builds work, the mruby-io gem has been taken out.
 This project depends on many tools and libraries, but first, you need:
 
 * A computer with a working vagrant installation
-* Disk space (of about ~20GB)
+* Disk space (of about ~10GB)
 
 Please note this has been developed on macOS High Sierra, Vagrant 2.2.4 and VirtualBox 5.2.28.
 VirtualBox 5 is recommended.
@@ -90,9 +91,19 @@ Please refer to the project "mrbtris" to get started on development.
 If you get stuck, find bugs, or have a better solution to problems, please report issues.
 Thanks!
 
-== TODO
+== Current issues
+
+* Convoluted build process, in particular, the playbook.yml expects mruby build to fail sh4 once, then copy a file built for the host, and retries
+* Needing a lot of disc
+* No platform API calls available without writing C code
+* Only tested on 1 environment
+
+== TODO (in no particular order)
 
 * make the mruby build better, especially around building once for host, once for DC
+* Provide wrappers for API calls, maybe via an mrbgem
+* Reduce the disc space required
+* Provide information on the serial cable
 * put some build chunks into its own yml or a shell script
 * scripted/automated test
 * consider alternatives to checking out specific versions and patching them
