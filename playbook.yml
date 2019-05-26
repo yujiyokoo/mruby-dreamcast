@@ -131,6 +131,11 @@
         state: absent
     - name: copy mruby repo for sh4
       command: cp -r /vagrant/src/mruby /vagrant/src/mruby-sh4
+    - name: add mruby-mtest mrbgem to host mruby
+      shell: >
+        git checkout . && patch -p1 < ../../patch.on.mruby-2.0.1.add.mruby-mtest.on.7c91efc1ffda769a5f1a872c646c82b00698f1b8
+      args:
+        chdir: /vagrant/src/mruby-host
     - name: build mruby for host
       make:
         chdir: /vagrant/src/mruby-host

@@ -1,0 +1,14 @@
+diff --git a/build_config.rb b/build_config.rb
+index 751317c7..c0fe0250 100644
+--- a/build_config.rb
++++ b/build_config.rb
+@@ -22,6 +22,9 @@ MRuby::Build.new do |conf|
+   # conf.gem :github => 'iij/mruby-io'
+   # conf.gem :git => 'git@github.com:iij/mruby-io.git', :branch => 'master', :options => '-v'
+ 
++  # unit test
++  conf.gem :github => 'iij/mruby-mtest'
++
+   # include the default GEMs
+   conf.gembox 'default'
+   # C compiler settings
