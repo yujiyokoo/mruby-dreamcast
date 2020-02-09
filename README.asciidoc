@@ -1,3 +1,7 @@
+= IMPORTANT:
+
+While the information here is not useless, if you can, please use the more up-to-date version based on docker: https://gitlab.com/yujiyokoo/docker-mruby-kos-dc
+
 = mruby-dreamcast
 
 mruby-dreamcast is a collection of scripts and settings to build a VM environment for building Dreamcast executable binaries with mruby.
